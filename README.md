@@ -36,10 +36,11 @@ You can copy the full script below and run it in your terminal or save it as `ov
 #!/bin/bash
 
 echo "[1/9] Installing Open vSwitch..."
-sudo apt install openvswitch-switch -y
+sudo apt install openvswitch-switch
 
 echo "[2/9] Creating OVS Bridge..."
 sudo ovs-vsctl add-br br-free5gc
+sudo ovs-vsctl show
 
 echo "[3/9] Creating veth pairs..."
 sudo ip link add vethA type veth peer name vethA-peer
@@ -59,6 +60,7 @@ echo "[6/9] Assigning IP addresses..."
 sudo ip addr add 10.0.0.1/24 dev vethA-peer
 sudo ip addr add 10.0.0.2/24 dev vethB-peer
 
+
 echo "[7/9] Pinging between interfaces..."
 ping 10.0.0.2 -c 4
 
@@ -68,6 +70,7 @@ sudo ip link add slice2-veth type veth peer name slice2-peer
 sudo ovs-vsctl add-port br-free5gc slice1-veth tag=10
 sudo ovs-vsctl add-port br-free5gc slice2-veth tag=20
 
+
 echo "[9/9] Configuring VLAN interfaces..."
 sudo ip link set slice1-peer up
 sudo ip link set slice1-veth up
@@ -75,7 +78,7 @@ sudo ip link set slice2-peer up
 sudo ip link set slice2-veth up
 sudo ip addr add 192.168.10.1/24 dev slice1-peer
 sudo ip addr add 192.168.20.1/24 dev slice2-peer
-ping 192.168.10.1 -c 4
-ping 192.168.20.1 -c 4
+ping 192.168.10.1
+ping 192.168.20.1
 
 echo "✅ OVS setup and slicing completed!"
